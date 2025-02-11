@@ -89,6 +89,8 @@ impl Eval for ast::Expr<'_> {
             Self::SmartQuote(v) => v.eval(vm).map(Value::Content),
             Self::Strong(v) => v.eval(vm).map(Value::Content),
             Self::Emph(v) => v.eval(vm).map(Value::Content),
+            Self::Underlined(v) => v.eval(vm).map(Value::Content),
+            Self::Deleted(v) => v.eval(vm).map(Value::Content),
             Self::Raw(v) => v.eval(vm).map(Value::Content),
             Self::Link(v) => v.eval(vm).map(Value::Content),
             Self::Label(v) => v.eval(vm),

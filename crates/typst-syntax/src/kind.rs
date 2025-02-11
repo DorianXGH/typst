@@ -38,6 +38,10 @@ pub enum SyntaxKind {
     Strong,
     /// Emphasized content: `_Emphasized_`.
     Emph,
+    /// Underlined content: `__Underlined__`.
+    Underlined,
+    /// Strike-through content: `~~Strike-through~~`.
+    Deleted,
     /// Raw text with optional syntax highlighting: `` `...` ``.
     Raw,
     /// A language tag at the start of raw text: ``typ ``.
@@ -122,6 +126,10 @@ pub enum SyntaxKind {
     Star,
     /// Toggles emphasized text and indicates a subscript in math: `_`.
     Underscore,
+    /// Toggles underlined text
+    DoubleUnderscore,
+    /// Toggles strike-through
+    DoubleTilde,
     /// Starts and ends a mathematical equation: `$`.
     Dollar,
     /// The unary plus and binary addition operator: `+`.
@@ -392,6 +400,8 @@ impl SyntaxKind {
             Self::SmartQuote => "smart quote",
             Self::Strong => "strong content",
             Self::Emph => "emphasized content",
+            Self::Underlined => "underlined content",
+            Self::Deleted => "deleted content",
             Self::Raw => "raw block",
             Self::RawLang => "raw language tag",
             Self::RawTrimmed => "raw trimmed",
@@ -431,6 +441,8 @@ impl SyntaxKind {
             Self::Colon => "colon",
             Self::Star => "star",
             Self::Underscore => "underscore",
+            Self::DoubleTilde => "double tilde",
+            Self::DoubleUnderscore => "double underscore",
             Self::Dollar => "dollar sign",
             Self::Plus => "plus",
             Self::Minus => "minus",

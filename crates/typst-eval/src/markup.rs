@@ -8,7 +8,7 @@ use typst_library::model::{
     StrongElem, Supplement, TermItem, Url,
 };
 use typst_library::text::{
-    LinebreakElem, RawContent, RawElem, SmartQuoteElem, SpaceElem, TextElem,
+    LinebreakElem, RawContent, RawElem, SmartQuoteElem, SpaceElem, TextElem, UnderlineElem, StrikeElem,
 };
 use typst_syntax::ast::{self, AstNode};
 use typst_utils::PicoStr;
@@ -176,6 +176,40 @@ impl Eval for ast::Emph<'_> {
         }
 
         Ok(EmphElem::new(body.eval(vm)?).pack())
+    }
+}
+
+impl Eval for ast::Underlined<'_> {
+    type Output = Content;
+
+    fn eval(self, vm: &mut Vm) -> SourceResult<Self::Output> {
+        let body = self.body();
+        if body.exprs().next().is_none() {
+            vm.engine
+                .sink
+                .warn(warning!(
+                    self.span(), "no text within double underscores"
+                ));
+        }
+
+        Ok(UnderlineElem::new(body.eval(vm)?).pack())
+    }
+}
+
+impl Eval for ast::Deleted<'_> {
+    type Output = Content;
+
+    fn eval(self, vm: &mut Vm) -> SourceResult<Self::Output> {
+        let body = self.body();
+        if body.exprs().next().is_none() {
+            vm.engine
+                .sink
+                .warn(warning!(
+                    self.span(), "no text within double tilde"
+                ));
+        }
+
+        Ok(StrikeElem::new(body.eval(vm)?).pack())
     }
 }
 

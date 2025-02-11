@@ -106,6 +106,10 @@ pub enum Expr<'a> {
     Strong(Strong<'a>),
     /// Emphasized content: `_Emphasized_`.
     Emph(Emph<'a>),
+    /// Underlined content: `__Underlined__`.
+    Underlined(Underlined<'a>),
+    /// Strike-trhough content: `~~Strike-through~~`.
+    Deleted(Deleted<'a>),
     /// Raw text with optional syntax highlighting: `` `...` ``.
     Raw(Raw<'a>),
     /// A hyperlink: `https://typst.org`.
@@ -228,6 +232,8 @@ impl<'a> AstNode<'a> for Expr<'a> {
             SyntaxKind::SmartQuote => node.cast().map(Self::SmartQuote),
             SyntaxKind::Strong => node.cast().map(Self::Strong),
             SyntaxKind::Emph => node.cast().map(Self::Emph),
+            SyntaxKind::Underlined => node.cast().map(Self::Underlined),
+            SyntaxKind::Deleted => node.cast().map(Self::Deleted),
             SyntaxKind::Raw => node.cast().map(Self::Raw),
             SyntaxKind::Link => node.cast().map(Self::Link),
             SyntaxKind::Label => node.cast().map(Self::Label),
@@ -293,6 +299,8 @@ impl<'a> AstNode<'a> for Expr<'a> {
             Self::SmartQuote(v) => v.to_untyped(),
             Self::Strong(v) => v.to_untyped(),
             Self::Emph(v) => v.to_untyped(),
+            Self::Underlined(v) => v.to_untyped(),
+            Self::Deleted(v) => v.to_untyped(),
             Self::Raw(v) => v.to_untyped(),
             Self::Link(v) => v.to_untyped(),
             Self::Label(v) => v.to_untyped(),
@@ -511,6 +519,30 @@ node! {
 
 impl<'a> Emph<'a> {
     /// The contents of the emphasis node.
+    pub fn body(self) -> Markup<'a> {
+        self.0.cast_first_match().unwrap_or_default()
+    }
+}
+
+node! {
+    /// Underlined content: `__Underlined__`.
+    Underlined
+}
+
+impl<'a> Underlined<'a> {
+    /// The contents of the underlined node.
+    pub fn body(self) -> Markup<'a> {
+        self.0.cast_first_match().unwrap_or_default()
+    }
+}
+
+node! {
+    /// Strike-through content: `~~Strike-through~~`.
+    Deleted
+}
+
+impl<'a> Deleted<'a> {
+    /// The contents of the strike-through node.
     pub fn body(self) -> Markup<'a> {
         self.0.cast_first_match().unwrap_or_default()
     }

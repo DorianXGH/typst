@@ -109,6 +109,8 @@ fn markup_expr(p: &mut Parser, at_start: bool, nesting: &mut usize) {
         SyntaxKind::Hash => embedded_code_expr(p),
         SyntaxKind::Star => strong(p),
         SyntaxKind::Underscore => emph(p),
+        SyntaxKind::DoubleTilde => deleted(p),
+        SyntaxKind::DoubleUnderscore => underlined(p),
         SyntaxKind::HeadingMarker if at_start => heading(p),
         SyntaxKind::ListMarker if at_start => list_item(p),
         SyntaxKind::EnumMarker if at_start => enum_item(p),
@@ -145,6 +147,28 @@ fn emph(p: &mut Parser) {
         markup(p, false, true, syntax_set!(Underscore, RightBracket, End));
         p.expect_closing_delimiter(m, SyntaxKind::Underscore);
         p.wrap(m, SyntaxKind::Emph);
+    });
+}
+
+/// Parses underlined content: `__Underlined__`.
+fn underlined(p: &mut Parser) {
+    p.with_nl_mode(AtNewline::StopParBreak, |p| {
+        let m = p.marker();
+        p.assert(SyntaxKind::DoubleUnderscore);
+        markup(p, false, true, syntax_set!(DoubleUnderscore, RightBracket, End));
+        p.expect_closing_delimiter(m, SyntaxKind::DoubleUnderscore);
+        p.wrap(m, SyntaxKind::Underlined);
+    });
+}
+
+/// Parses strike-through content: `~~Underlined~~`.
+fn deleted(p: &mut Parser) {
+    p.with_nl_mode(AtNewline::StopParBreak, |p| {
+        let m = p.marker();
+        p.assert(SyntaxKind::DoubleTilde);
+        markup(p, false, true, syntax_set!(DoubleTilde, RightBracket, End));
+        p.expect_closing_delimiter(m, SyntaxKind::DoubleTilde);
+        p.wrap(m, SyntaxKind::Deleted);
     });
 }
 
