@@ -124,10 +124,8 @@ pub enum SyntaxKind {
     /// The strong text toggle, multiplication operator, and wildcard import
     /// symbol: `*`.
     Star,
-    /// Toggles emphasized text and indicates a subscript in math: `_`.
+    /// Toggles underlined text and indicates a subscript in math: `_`.
     Underscore,
-    /// Toggles underlined text
-    DoubleUnderscore,
     /// Toggles strike-through
     DoubleTilde,
     /// Starts and ends a mathematical equation: `$`.
@@ -442,7 +440,6 @@ impl SyntaxKind {
             Self::Star => "star",
             Self::Underscore => "underscore",
             Self::DoubleTilde => "double tilde",
-            Self::DoubleUnderscore => "double underscore",
             Self::Dollar => "dollar sign",
             Self::Plus => "plus",
             Self::Minus => "minus",

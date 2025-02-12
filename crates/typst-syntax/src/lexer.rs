@@ -204,7 +204,7 @@ impl Lexer<'_> {
             '-' if self.s.eat_if('?') => SyntaxKind::Shorthand,
             '-' if self.s.at(char::is_numeric) => SyntaxKind::Shorthand,
             '*' if !self.in_word() => SyntaxKind::Star,
-            '_' if !self.in_word() => if self.s.eat_if('_') { SyntaxKind::DoubleUnderscore } else { SyntaxKind::Underscore },
+            '_' if !self.in_word() => SyntaxKind::Underscore,
 
             '#' => SyntaxKind::Hash,
             '[' => SyntaxKind::LeftBracket,
@@ -225,7 +225,8 @@ impl Lexer<'_> {
             }
             '-' if self.space_or_end() => SyntaxKind::ListMarker,
             '+' if self.space_or_end() => SyntaxKind::EnumMarker,
-            '/' if self.space_or_end() => SyntaxKind::TermMarker,
+            '&' if self.space_or_end() => SyntaxKind::TermMarker,
+            '/' => SyntaxKind::Slash,
             '0'..='9' => self.numbering(start),
 
             _ => self.text(),

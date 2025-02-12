@@ -108,9 +108,9 @@ fn markup_expr(p: &mut Parser, at_start: bool, nesting: &mut usize) {
 
         SyntaxKind::Hash => embedded_code_expr(p),
         SyntaxKind::Star => strong(p),
-        SyntaxKind::Underscore => emph(p),
+        SyntaxKind::Slash => emph(p),
         SyntaxKind::DoubleTilde => deleted(p),
-        SyntaxKind::DoubleUnderscore => underlined(p),
+        SyntaxKind::Underscore => underlined(p),
         SyntaxKind::HeadingMarker if at_start => heading(p),
         SyntaxKind::ListMarker if at_start => list_item(p),
         SyntaxKind::EnumMarker if at_start => enum_item(p),
@@ -143,9 +143,11 @@ fn strong(p: &mut Parser) {
 fn emph(p: &mut Parser) {
     p.with_nl_mode(AtNewline::StopParBreak, |p| {
         let m = p.marker();
-        p.assert(SyntaxKind::Underscore);
-        markup(p, false, true, syntax_set!(Underscore, RightBracket, End));
-        p.expect_closing_delimiter(m, SyntaxKind::Underscore);
+        p.assert(SyntaxKind::Slash);
+        markup(p, false, true, syntax_set!(Slash, RightBracket, End));
+        let m2 = p.marker();
+        p.nodes[m2.0 - 1].convert_to_error("stopped here");
+        p.expect_closing_delimiter(m, SyntaxKind::Slash);
         p.wrap(m, SyntaxKind::Emph);
     });
 }
@@ -154,9 +156,9 @@ fn emph(p: &mut Parser) {
 fn underlined(p: &mut Parser) {
     p.with_nl_mode(AtNewline::StopParBreak, |p| {
         let m = p.marker();
-        p.assert(SyntaxKind::DoubleUnderscore);
-        markup(p, false, true, syntax_set!(DoubleUnderscore, RightBracket, End));
-        p.expect_closing_delimiter(m, SyntaxKind::DoubleUnderscore);
+        p.assert(SyntaxKind::Underscore);
+        markup(p, false, true, syntax_set!(Underscore, RightBracket, End));
+        p.expect_closing_delimiter(m, SyntaxKind::Underscore);
         p.wrap(m, SyntaxKind::Underlined);
     });
 }

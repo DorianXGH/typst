@@ -202,7 +202,6 @@ pub fn highlight(node: &LinkedNode) -> Option<Tag> {
             _ => None,
         },
         SyntaxKind::DoubleTilde => None,
-        SyntaxKind::DoubleUnderscore => None,
         SyntaxKind::Dollar => Some(Tag::MathDelimiter),
         SyntaxKind::Plus => Some(Tag::Operator),
         SyntaxKind::Minus => Some(Tag::Operator),
