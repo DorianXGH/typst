@@ -105,12 +105,12 @@ impl Lexer<'_> {
             Some(c) if is_space(c, self.mode) => self.whitespace(start, c),
             Some('#') if start == 0 && self.s.eat_if('!') => self.shebang(),
             Some('/') if self.s.eat_if('/') => self.line_comment(),
-            Some('/') if self.s.eat_if('*') => self.block_comment(),
-            Some('*') if self.s.eat_if('/') => {
+            Some('/') if self.s.eat_if('&') => self.block_comment(),
+            Some('&') if self.s.eat_if('/') => {
                 let kind = self.error("unexpected end of block comment");
                 self.hint(
-                    "consider escaping the `*` with a backslash or \
-                     opening the block comment with `/*`",
+                    "consider escaping the `&` with a backslash or \
+                     opening the block comment with `/&`",
                 );
                 kind
             }
@@ -169,14 +169,14 @@ impl Lexer<'_> {
         // Find the first `*/` that does not correspond to a nested `/*`.
         while let Some(c) = self.s.eat() {
             state = match (state, c) {
-                ('*', '/') => {
+                ('&', '/') => {
                     depth -= 1;
                     if depth == 0 {
                         break;
                     }
                     '_'
                 }
-                ('/', '*') => {
+                ('/', '&') => {
                     depth += 1;
                     '_'
                 }
@@ -540,7 +540,7 @@ impl Lexer<'_> {
             let mut s = self.s;
             match s.eat() {
                 Some(' ') if s.at(char::is_alphanumeric) => {}
-                Some('/') if !s.at(['/', '*']) => {}
+                // Some('/') if !s.at(['/', '*']) => {}
                 Some('-') if !s.at(['-', '?']) => {}
                 Some('.') if !s.at("..") => {}
                 Some('h') if !s.at("ttp://") && !s.at("ttps://") => {}

@@ -145,8 +145,6 @@ fn emph(p: &mut Parser) {
         let m = p.marker();
         p.assert(SyntaxKind::Slash);
         markup(p, false, true, syntax_set!(Slash, RightBracket, End));
-        let m2 = p.marker();
-        p.nodes[m2.0 - 1].convert_to_error("stopped here");
         p.expect_closing_delimiter(m, SyntaxKind::Slash);
         p.wrap(m, SyntaxKind::Emph);
     });
